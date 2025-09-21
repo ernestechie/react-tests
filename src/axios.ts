@@ -36,6 +36,7 @@ export const httpClient = async ({
   }
 
   try {
+    console.log(`Getting ${dataKey.toLowerCase()}...`);
     const res = await axios.request({
       method,
       url: `${baseUrl}/${url}`,
@@ -80,18 +81,16 @@ const getDataFromCache = (dataKey: string) => {
     const cacheExpiry = lsData?.expiry;
     const cacheExpiryTime = new Date(cacheExpiry);
 
-    console.log("CACHE_EXPIRY_TIME", cacheExpiryTime);
-
     // If the expiry time in the cache has passed current time
     if (cacheExpiryTime < now) {
-      console.log("CACHE_EXPIRED");
+      console.log("CACHE_EXPIRED", cacheExpiryTime);
       return null;
     }
 
     return lsData as HttpClientReturn;
   }
 
-  console.log("LS_JSON_DATA", lsJsonData);
+  console.log("LS_JSON_DATA", lsData);
 
   return null;
 };
