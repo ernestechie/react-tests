@@ -13,7 +13,7 @@ export default function Articles() {
       try {
         const res = await httpClient({
           url: "articles",
-          // useCache: true,
+          useCache: true,
           dataKey: "articles",
         });
 
