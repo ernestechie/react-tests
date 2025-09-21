@@ -83,8 +83,10 @@ const getDataFromCache = (dataKey: string) => {
 
     // If the expiry time in the cache has passed current time
     if (cacheExpiryTime < now) {
-      console.log("CACHE_EXPIRED", cacheExpiryTime);
+      console.log("CACHE_EXPIRED");
       return null;
+    } else {
+      console.log("CACHE_WILL_EXPIRE", cacheExpiryTime);
     }
 
     return lsData as HttpClientReturn;
@@ -114,7 +116,7 @@ const storeDataInCache = async (
     const stringifyData = JSON.stringify(cacheData);
     localStorage.setItem(dataKey, stringifyData);
 
-    console.log(`${dataKey} stored in cache`.toUpperCase(), cacheData);
+    console.log(`${dataKey} stored in cache`.toUpperCase(), data);
   } catch (err) {
     throw err;
   }
