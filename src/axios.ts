@@ -58,7 +58,7 @@ export const httpClient = async ({
 
     return {
       data: apiData?.[dataKey] ?? apiData ?? {},
-      fromCache: useCache,
+      fromCache: false,
       message: apiMessage || "",
     };
   } catch (err) {
@@ -114,7 +114,7 @@ const storeDataInCache = async (
     const stringifyData = JSON.stringify(cacheData);
     localStorage.setItem(dataKey, stringifyData);
 
-    console.log("DATA_STORED_IN_LOCAL_STORAGE_CACHE", cacheData);
+    console.log(`${dataKey} stored in cache`.toUpperCase(), cacheData);
   } catch (err) {
     throw err;
   }
