@@ -29,10 +29,12 @@ export const httpClient = async ({
   cacheExpiry,
   dataKey = "data",
 }: HttpClientProps) => {
-  const lsJsonData = getDataFromCache(dataKey);
   // Check local storage cache
-  if (useCache && lsJsonData) {
-    return lsJsonData;
+  if (useCache) {
+    const lsJsonData = getDataFromCache(dataKey);
+    if (lsJsonData) {
+      return lsJsonData;
+    }
   }
 
   try {
@@ -46,20 +48,18 @@ export const httpClient = async ({
     });
 
     const apiData = res?.data?.data || {};
-
-    console.log(apiData);
+    const apiMessage = res?.data?.message;
 
     // Persist item to local storage (Cache)
     if (useCache && apiData && typeof apiData === "object") {
       const dataToStore = apiData?.[dataKey];
-      console.log("Data_to_store", dataToStore);
-      await storeDataInCache(dataToStore, dataKey);
+      await storeDataInCache(dataToStore, dataKey, apiMessage || "");
     }
 
     return {
       data: apiData?.[dataKey] ?? apiData ?? {},
       fromCache: useCache,
-      message: apiData?.message || "",
+      message: apiMessage || "",
     };
   } catch (err) {
     throw err;
@@ -95,7 +95,11 @@ const getDataFromCache = (dataKey: string) => {
   return null;
 };
 
-const storeDataInCache = async (data: any, dataKey: string) => {
+const storeDataInCache = async (
+  data: any,
+  dataKey: string,
+  message?: string
+) => {
   if (!dataKey) throw new Error("dataKey is required to store data in cache");
 
   try {
@@ -103,14 +107,14 @@ const storeDataInCache = async (data: any, dataKey: string) => {
     const cacheData: HttpClientReturn = {
       data,
       fromCache: true,
-      message: "",
+      message: message || "",
       expiry: new Date().getTime() + minuteInMilliseconds,
     };
 
     const stringifyData = JSON.stringify(cacheData);
     localStorage.setItem(dataKey, stringifyData);
 
-    console.log("DATA_STORED_IN_LOCAL_STORAGE_CACHE");
+    console.log("DATA_STORED_IN_LOCAL_STORAGE_CACHE", cacheData);
   } catch (err) {
     throw err;
   }

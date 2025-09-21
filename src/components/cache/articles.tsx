@@ -13,10 +13,11 @@ export default function Articles() {
       try {
         const res = await httpClient({
           url: "articles",
-          useCache: true,
+          // useCache: true,
           dataKey: "articles",
         });
 
+        console.log("Response", res);
         setArticles(res?.data ?? []);
       } catch (err) {
         console.error(err);
